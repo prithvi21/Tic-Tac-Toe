@@ -3,35 +3,35 @@ import java.util.Scanner;
 public class Player extends Game {
     final char cross = 'X';
     final char noughts = 'O';
-    private int x;//x co-ordinate
-    private int y;//y co-ordinate
+    private int row;//x co-ordinate
+    private int col;//y co-ordinate
     private Scanner input = new Scanner(System.in);
 
+
+    /* param z  noughts or cross */
     @Override
     void prompt(char z) throws InputMismatchException {
         System.out.println("Enter x co-ordinate:");
-        x = input.nextInt();
+        row = input.nextInt();
         System.out.println("Enter y co-ordinate:");
-        y = input.nextInt();
-        if (z == cross) playermove(x, y, grid, cross);
-        else playermove(x, y, grid, noughts);
+        col = input.nextInt();
+        if (z == cross) playerMove(row, col, grid, cross);
+        else playerMove(row,col,grid, noughts);
     }
 
     private boolean validCell(int row, int col) {
-        x = row;
-        y = col;
-        boolean bool = false;
-        if (grid[x][y] == 0) bool = true;
-        return bool;
+        this.row=row;
+        this.col=col;
+        return (grid[row][col] == 0);
     }
 
-    private void playermove(int x, int y, char grid[][], char t) throws ArrayIndexOutOfBoundsException {
+    private void playerMove(int row, int col, char grid[][], char t) throws ArrayIndexOutOfBoundsException {
         this.grid = grid;
-        this.x = x;
-        this.y = y;
+        this.row = row;
+        this.col = col;
         try {
-            if (validCell(x, y))
-                grid[x][y] = t;
+            if (validCell(row, col))
+                grid[row][col] = t;
             else {
                 System.out.println("Cell occupied");
                 prompt(t);
@@ -43,38 +43,32 @@ public class Player extends Game {
     }
 
 
-    @Override
-    boolean win(char z) {
-        boolean win=false;
-        if(
+//    @Override
+    boolean win(char z,char[][] grid) {
+        return
+        (
                 (grid[0][0]==z&&grid[0][1]==z&&grid[0][2]==z) ||
                         (grid[1][0]==z&&grid[1][1]==z&&grid[1][2]==z) ||
                         (grid[2][0]==z&&grid[2][1]==z&&grid[2][2]==z) ||
                         (grid[0][0]==z&&grid[1][1]==z&&grid[2][2]==z) ||
                         (grid[0][2]==z&&grid[1][1]==z&&grid[2][0]==z)
-        )
-win=true;
+        );
 
-        return win;
+
     }
 
     @Override
-    boolean no_winner_yet(){
-        boolean bool=false;
-        if(!win(cross) && !win(noughts)) bool=true;
-        return bool;
+    boolean no_winner_yet(char[][] grid){
+        return !win(cross,grid) && !win(noughts,grid);
     }
 
-boolean gridFull(){
-        boolean bool=true;
-       if(grid[0][0]==0 || grid[0][1]==0 || grid[0][2]==0|| grid[1][0]==0||grid[1][1]==0||grid[1][2]==0 ||
-               grid[2][0]==0||grid[2][1]==0||grid[2][2]==0) bool=false;
-       return bool;
-
+boolean gridNotFull(){
+        return (grid[0][0]==0 || grid[0][1]==0 || grid[0][2]==0|| grid[1][0]==0||grid[1][1]==0
+               ||grid[1][2]==0 || grid[2][0]==0||grid[2][1]==0||grid[2][2]==0);
 }
 
-boolean condition(){
-        return no_winner_yet() && !gridFull();
+boolean condition(char[][] grid){
+        return no_winner_yet(grid) && gridNotFull();
 }
 }
 
